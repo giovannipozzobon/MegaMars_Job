@@ -41,27 +41,62 @@ dmachlsrc:	.word 0x0000					; src
 			lda frame
 			sta 0xd774
 
-			lda #0
-			sta addline+1
+			ldy #0							; initialize adder
 
-			lda #0x60
+			lda #.byte1 HEIGHTLINES			; set basepage to where the heightlines are
 			tab
 
-			phx
+multheight:		.macro a
+				lda zp:\a
+				sta 0xd770
+				tya
+				adc 0xd779
+				sta zp:\a
+				.endm
 
+multheight8:	.macro a
+				multheight \a*8+0
+				multheight \a*8+1
+				multheight \a*8+2
+				multheight \a*8+3
+				multheight \a*8+4
+				multheight \a*8+5
+				multheight \a*8+6
+				multheight \a*8+7
+				.endm
+
+				.public multheight128
+multheight128:
+				multheight8 0
+				multheight8 1
+				multheight8 2
+				multheight8 3
+				multheight8 4
+				multheight8 5
+				multheight8 6
+				multheight8 7
+				multheight8 8
+				multheight8 9
+				multheight8 10
+				multheight8 11
+				multheight8 12
+				multheight8 13
+				multheight8 14
+				multheight8 15
+
+/*
+			phx
 			ldx #127
 multlineloop:
 			lda zp:0x00,x
 			sta 0xd770
-			lda 0xd779
-			clc
-addline:	adc #32
+			tya
+			adc 0xd779
 			sta zp:0x00,x
 			dex
 			bpl multlineloop
-
 			plx
-
+*/
 			lda #0
 			tab
 
