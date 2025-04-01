@@ -31,36 +31,8 @@ irq_main:
 			sta 0xd020
 			sta 0xd021
 
-			lda #0x32
-			sta 0xd012
-			lda #.byte0 irq_main2
-			sta 0xfffe
-			lda #.byte1 irq_main2
-			sta 0xffff
-
-			plz
-			ply
-			plx
-			pla
-			plp
-			asl 0xd019
-			rti
-
-; ------------------------------------------------------------------------------------
-
-irq_main2:
-			php
-			pha
-			phx
-			phy
-			phz
-
-			lda #0x00
-			sta 0xd020
-			sta 0xd021
-
-			lda #0xff
-			sta 0xd012
+			;lda #0x32
+			;sta 0xd012
 			lda #.byte0 irq_main
 			sta 0xfffe
 			lda #.byte1 irq_main

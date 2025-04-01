@@ -1,6 +1,6 @@
 # -----------------------------------------------------------------------------
 
-megabuild		= 0
+megabuild		= 1
 attachdebugger	= 0
 
 # -----------------------------------------------------------------------------
@@ -38,13 +38,15 @@ OBJS = $(ASM_SRCS:%.s=$(EXE_DIR)/%.o) $(C_SRCS:%.c=$(EXE_DIR)/%.o)
 OBJS_DEBUG = $(ASM_SRCS:%.s=$(EXE_DIR)/%-debug.o) $(C_SRCS:%.c=$(EXE_DIR)/%-debug.o)
 
 BINFILES  = $(BIN_DIR)/gfx_chars0.bin
-BINFILES += $(BIN_DIR)/gfx_pal0.bin
-BINFILES += $(BIN_DIR)/hm_chars0.bin
+BINFILES += $(BIN_DIR)/mapcol_pal0.bin
+BINFILES += $(BIN_DIR)/maphgt_chars0.bin
+BINFILES += $(BIN_DIR)/mapcol_chars0.bin
 BINFILES += $(BIN_DIR)/song.mod
 
 BINFILESMC  = $(BIN_DIR)/gfx_chars0.bin.addr.mc
-BINFILESMC += $(BIN_DIR)/gfx_pal0.bin.addr.mc
-BINFILESMC += $(BIN_DIR)/hm_chars0.bin.addr.mc
+BINFILESMC += $(BIN_DIR)/mapcol_pal0.bin.addr.mc
+BINFILESMC += $(BIN_DIR)/maphgt_chars0.bin.addr.mc
+BINFILESMC += $(BIN_DIR)/mapcol_chars0.bin.addr.mc
 BINFILESMC += $(BIN_DIR)/song.mod.addr.mc
 
 # -----------------------------------------------------------------------------
@@ -56,17 +58,24 @@ $(BIN_DIR)/gfx_chars0.bin: $(BIN_DIR)/gfx.bin
 
 # character mode = 1 = SuperExtendedAttributeMode
 # direction      = 2 = PixelLeftRightTopBottom
-$(BIN_DIR)/hm_chars0.bin: $(BIN_DIR)/hm.bin
+$(BIN_DIR)/mapcol_pal0.bin: $(BIN_DIR)/mapcol.bin
+	$(MC) $< cm1:1 d1:2 cl1:20000 rc1:0
+
+# character mode = 1 = SuperExtendedAttributeMode
+# direction      = 2 = PixelLeftRightTopBottom
+$(BIN_DIR)/maphgt_chars0.bin: $(BIN_DIR)/maphgt.bin
 	$(MC) $< cm1:1 d1:2 cl1:20000 rc1:0
 
 $(BIN_DIR)/alldata.bin: $(BINFILES)
 	$(MEGAADDRESS) $(BIN_DIR)/gfx_chars0.bin      00010000
-	$(MEGAADDRESS) $(BIN_DIR)/gfx_pal0.bin        0000c000
-	$(MEGAADDRESS) $(BIN_DIR)/hm_chars0.bin       00020000
+	$(MEGAADDRESS) $(BIN_DIR)/mapcol_pal0.bin     0000c000
+	$(MEGAADDRESS) $(BIN_DIR)/maphgt_chars0.bin   00020000
+	$(MEGAADDRESS) $(BIN_DIR)/mapcol_chars0.bin   00030000
 	$(MEGAADDRESS) $(BIN_DIR)/song.mod            08000000
 	$(MEGACRUNCH) $(BIN_DIR)/gfx_chars0.bin.addr
-	$(MEGACRUNCH) $(BIN_DIR)/gfx_pal0.bin.addr
-	$(MEGACRUNCH) $(BIN_DIR)/hm_chars0.bin.addr
+	$(MEGACRUNCH) $(BIN_DIR)/mapcol_pal0.bin.addr
+	$(MEGACRUNCH) $(BIN_DIR)/maphgt_chars0.bin.addr
+	$(MEGACRUNCH) $(BIN_DIR)/mapcol_chars0.bin.addr
 	$(MEGACRUNCH) $(BIN_DIR)/song.mod.addr
 	$(MEGAIFFL) $(BINFILESMC) $(BIN_DIR)/alldata.bin
 

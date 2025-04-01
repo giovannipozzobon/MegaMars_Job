@@ -38,22 +38,40 @@ program_mainloop:
 
 copyheightlineA:
 
-			; copy from heightmap, line X
-			sta dmachlsrc+1					
+			; copy from heightmap/colormap, line X
+			sta dmachlsrc1+1
+			sta dmachlsrc2+1
 
 			sta 0xd707						; inline DMA
 			.byte 0x80, 0x00				; sourceMB
 			.byte 0x81, 0x00				; destMB
-linescalelo:.byte 0x82, 0					; Source skip rate (256ths of bytes)
-linescalehi:.byte 0x83, 1					; Source skip rate (whole bytes)
+linescalelo1:.byte 0x82, 0					; Source skip rate (256ths of bytes)
+linescalehi1:.byte 0x83, 1					; Source skip rate (whole bytes)
 			.byte 0x84, 0					; Destination skip rate (256ths of bytes)
 			.byte 0x85, 1					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
 			.byte 0x00						; end of job options
 			.byte 0x00						; copy
 			.word 128						; count
-dmachlsrc:	.word 0x0000					; src
+dmachlsrc1:	.word 0x0000					; src
 			.byte (HEIGHTMAP>>16)			; src bank and flags
 			.word HEIGHTLINES				; dst
+			.byte 0x00						; dst bank and flags
+			.byte 0x00						; cmd hi
+			.word 0x0000					; modulo, ignored
+
+			sta 0xd707						; inline DMA
+			.byte 0x80, 0x00				; sourceMB
+			.byte 0x81, 0x00				; destMB
+linescalelo2:.byte 0x82, 0					; Source skip rate (256ths of bytes)
+linescalehi2:.byte 0x83, 1					; Source skip rate (whole bytes)
+			.byte 0x84, 0					; Destination skip rate (256ths of bytes)
+			.byte 0x85, 1					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
+			.byte 0x00						; end of job options
+			.byte 0x00						; copy
+			.word 128						; count
+dmachlsrc2:	.word 0x0000					; src
+			.byte (COLORMAP>>16)			; src bank and flags
+			.word COLORLINES				; dst
 			.byte 0x00						; dst bank and flags
 			.byte 0x00						; cmd hi
 			.word 0x0000					; modulo, ignored
@@ -118,7 +136,7 @@ renderheightline:
 			ldy #0
 
 rhlloop:
-			lda HEIGHTLINES+0,y				; get colour
+			lda COLORLINES+0,y				; get colour
 			sta getpixel+0
 			lda HEIGHTLINES+128,y			; get height
 			sta 0xd774
@@ -139,7 +157,7 @@ rhlloop:
 			.byte 0x85, 8					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
 			.byte 0x00						; end of job options
 			.byte 0x03						; fill, no chain
-			.word 1							; count
+			.word 4							; count
 getpixel:	.word 0x00fe					; fill value
 			.byte 0x00						; src bank and flags
 putpixel:	.word 0x0000					; dst
@@ -172,7 +190,8 @@ renderloop:
 			sta 0xd020
 
 			lda perspscale,x
-			sta linescalelo+1
+			sta linescalelo1+1
+			sta linescalelo2+1
 			clc
 			txa									; get current line
 			adc frame							; add offset based on frame number
@@ -188,7 +207,7 @@ renderloop:
 			jsr renderheightline
 
 			inx
-			cpx #8
+			cpx #20
 			bne renderloop
 
 			lda #0
@@ -198,14 +217,18 @@ renderloop:
 
  ; -----------------------------------------------------------------------------------------------
 
+			.public perspbaseheight
 perspbaseheight:
-			.byte 100, 102, 105, 108, 112, 117, 125, 132
+			.space 32
 
+			.public perspheight
 perspheight:
-			.byte 32, 35, 38, 42, 45, 48, 52, 55
+			.space 32
 
+			.public perspscale
 perspscale:
-			.byte 70, 60, 50, 40, 30, 20, 10, 0			
+			.byte 150, 140, 130, 120, 110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0
+
  ; -----------------------------------------------------------------------------------------------
 
 			.align 256

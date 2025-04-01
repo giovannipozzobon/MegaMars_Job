@@ -8,7 +8,12 @@ void program_update();
 extern void program_mainloop();
 
 extern void irq_main();
+
 extern uint8_t columnlo;
 extern uint8_t columnhi;
+
+extern uint8_t perspbaseheight;
+extern uint8_t perspheight;
+extern uint8_t perspscale;
 
 #endif

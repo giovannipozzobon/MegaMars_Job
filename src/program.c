@@ -17,6 +17,7 @@ void program_loaddata()
 	floppy_iffl_fast_load(); // chars
 	floppy_iffl_fast_load(); // pal
 	floppy_iffl_fast_load(); // heightmap
+	floppy_iffl_fast_load(); // colourmap
 	floppy_iffl_fast_load(); // song
 }
 
@@ -53,5 +54,17 @@ void program_init()
 			poke(&columnlo+y*8+x, ((y*25*64 + x) >> 0) & 0xff);
 			poke(&columnhi+y*8+x, ((y*25*64 + x) >> 8) & 0xff);
 		}
+	}
+
+	// fill perspective tables
+	for(uint16_t z=0; z<32; z++)
+	{
+		//perspbaseheight;
+		//perspheight;
+		//perspscale;
+
+		poke(&perspbaseheight+z, 100 + 50*32/(33-z));
+		poke(&perspheight+z,           24*32/(33-z));
+		poke(&perspscale+z,      255 - 24*32/(33-z));
 	}
 }
