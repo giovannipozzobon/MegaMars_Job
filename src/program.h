@@ -7,4 +7,8 @@ void program_update();
 
 extern void program_mainloop();
 
+extern void irq_main();
+extern uint8_t columnlo;
+extern uint8_t columnhi;
+
 #endif

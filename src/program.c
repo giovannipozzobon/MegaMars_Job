@@ -9,8 +9,6 @@
 #include "dmajobs.h"
 #include "program.h"
 
-extern void irq_main();
-
 void program_loaddata()
 {
 	fl_init();
@@ -44,6 +42,16 @@ void program_init()
 			poke(SCREEN+y*RRBSCREENWIDTH2+2*x+0, (i >> 0) & 0xff);
 			poke(SCREEN+y*RRBSCREENWIDTH2+2*x+1, (i >> 8) & 0xff);
 			i++;
+		}
+	}
+
+	// fill column tables
+	for(uint16_t y=0; y<32; y++)
+	{
+		for(uint16_t x=0; x<8; x++)
+		{
+			poke(&columnlo+y*8+x, ((y*25*64 + x) >> 0) & 0xff);
+			poke(&columnhi+y*8+x, ((y*25*64 + x) >> 8) & 0xff);
 		}
 	}
 }
