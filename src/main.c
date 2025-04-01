@@ -61,7 +61,7 @@ void main()
 	VIC3.H640			= 0;									// enable 640 horizontal width
 	VIC3.V400			= 0;									// enable 400 vertical height
 	VIC4.CHRYSCL		= 0;
-	VIC4.CHRXSCL		= 0x78;									// 0x78 is normal scaling, 0x32 is stretched
+	VIC4.CHRXSCL		= 0x40;									// 0x78 is normal scaling, 0x32 is stretched
 
 	VIC4.DISPROWS		= 50;									// display 50 rows of text
 

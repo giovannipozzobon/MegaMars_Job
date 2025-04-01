@@ -10,7 +10,7 @@ multheight:		.macro a
 				sta 0xd774					; put in MULTINB
 				tya
 				sbc 0xd779					; add base height
-				sta zp:\a+128				; put height
+				sta zp:\a					; put height
 				.endm
 
 multheight8:	.macro a
@@ -36,7 +36,31 @@ program_mainloop:
 
 ; -----------------------------------------------------------------------------------------------
 
-copyheightlineA:
+clearscreen:
+
+			sta 0xd707						; inline DMA
+			.byte 0x80, 0x00				; sourceMB
+			.byte 0x81, 0x00				; destMB
+			.byte 0x82, 0					; Source skip rate (256ths of bytes)
+			.byte 0x83, 1					; Source skip rate (whole bytes)
+			.byte 0x84, 0					; Destination skip rate (256ths of bytes)
+			.byte 0x85, 1					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
+			.byte 0x00						; end of job options
+			.byte 0x03						; fill, no chain
+			.word 160*200					; count
+			.word 0x00fe					; fill value
+			.byte 0x00						; src bank and flags
+			.word 0x0000					; dst
+			.byte ((GFXMEM>>16) & 0x0f)		; dst bank and flags
+			.byte 0x00						; cmd hi
+			.word 0x0000					; modulo, ignored
+
+			rts
+
+; -----------------------------------------------------------------------------------------------
+
+
+copyhgtcolsourceline:
 
 			; copy from heightmap/colormap, line X
 			sta dmachlsrc1+1
@@ -51,7 +75,7 @@ linescalehi1:.byte 0x83, 1					; Source skip rate (whole bytes)
 			.byte 0x85, 1					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
 			.byte 0x00						; end of job options
 			.byte 0x00						; copy
-			.word 128						; count
+			.word 160						; count
 dmachlsrc1:	.word 0x0000					; src
 			.byte (HEIGHTMAP>>16)			; src bank and flags
 			.word HEIGHTLINES				; dst
@@ -68,7 +92,7 @@ linescalehi2:.byte 0x83, 1					; Source skip rate (whole bytes)
 			.byte 0x85, 1					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
 			.byte 0x00						; end of job options
 			.byte 0x00						; copy
-			.word 128						; count
+			.word 160						; count
 dmachlsrc2:	.word 0x0000					; src
 			.byte (COLORMAP>>16)			; src bank and flags
 			.word COLORLINES				; dst
@@ -117,6 +141,10 @@ scaleheightline:
 			multheight8 13
 			multheight8 14
 			multheight8 15
+			multheight8 16
+			multheight8 17
+			multheight8 18
+			multheight8 19
 
 			lda #0							; put basepage back to zeropage
 			tab
@@ -138,7 +166,7 @@ renderheightline:
 rhlloop:
 			lda COLORLINES+0,y				; get colour
 			sta getpixel+0
-			lda HEIGHTLINES+128,y			; get height
+			lda HEIGHTLINES,y				; get height
 			sta 0xd774
 			clc
 			lda 0xd779
@@ -157,7 +185,7 @@ rhlloop:
 			.byte 0x85, 8					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
 			.byte 0x00						; end of job options
 			.byte 0x03						; fill, no chain
-			.word 4							; count
+			.word 32						; count
 getpixel:	.word 0x00fe					; fill value
 			.byte 0x00						; src bank and flags
 putpixel:	.word 0x0000					; dst
@@ -166,7 +194,7 @@ putpixel:	.word 0x0000					; dst
 			.word 0x0000					; modulo, ignored
 
 			iny
-			cpy #128
+			cpy #160
 			bne rhlloop
 
 			rts
@@ -179,7 +207,9 @@ program_testdmalines:
 			lda #0
 			sta 0xd020
 
-			inc frame
+			jsr clearscreen
+
+			dec frame
 
 			ldx #0
 
@@ -189,13 +219,16 @@ renderloop:
 			adc #0x10
 			sta 0xd020
 
-			lda perspscale,x
+			lda perspscalelo,x
 			sta linescalelo1+1
 			sta linescalelo2+1
+			lda perspscalehi,x
+			sta linescalelo1+2
+			sta linescalelo2+2
 			clc
 			txa									; get current line
 			adc frame							; add offset based on frame number
-			jsr copyheightlineA
+			jsr copyhgtcolsourceline
 
 			jsr initializemultregs
 			lda perspbaseheight,x				; set base to this
@@ -217,6 +250,7 @@ renderloop:
 
  ; -----------------------------------------------------------------------------------------------
 
+			.align 256
 			.public perspbaseheight
 perspbaseheight:
 			.space 32
@@ -225,9 +259,13 @@ perspbaseheight:
 perspheight:
 			.space 32
 
-			.public perspscale
-perspscale:
-			.byte 150, 140, 130, 120, 110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0
+			.public perspscalelo
+perspscalelo:
+			.space 32
+
+			.public perspscalehi
+perspscalehi:
+			.space 32
 
  ; -----------------------------------------------------------------------------------------------
 

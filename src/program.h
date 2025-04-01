@@ -14,6 +14,7 @@ extern uint8_t columnhi;
 
 extern uint8_t perspbaseheight;
 extern uint8_t perspheight;
-extern uint8_t perspscale;
+extern uint8_t perspscalelo;
+extern uint8_t perspscalehi;
 
 #endif

@@ -63,8 +63,9 @@ void program_init()
 		//perspheight;
 		//perspscale;
 
-		poke(&perspbaseheight+z, 100 + 50*32/(33-z));
+		poke(&perspbaseheight+z, 64 + 40*32/(33-z));
 		poke(&perspheight+z,           24*32/(33-z));
-		poke(&perspscale+z,      255 - 24*32/(33-z));
+		poke(&perspscalelo+z,    ((512 - 24*32/(33-z)) >> 0) & 0xff);
+		poke(&perspscalehi+z,    ((512 - 24*32/(33-z)) >> 8) & 0xff);
 	}
 }
