@@ -15,7 +15,7 @@
 		)
 	)
 
-	(memory prog (address (#x1200 . #x6fff)) (type any)
+	(memory prog (address (#x1200 . #x5fff)) (type any)
 		(section
 			(programStart #x1200)
 			startup

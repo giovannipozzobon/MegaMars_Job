@@ -8,7 +8,9 @@
 #define PALETTE					0xc000
 
 #define GFXMEM					0x10000
-#define TEXTUREMEM              0x20000
+#define HEIGHTMAP				0x20000
+
+#define HEIGHTLINES				0x06000
 
 #define COLOR_RAM				0xff80000
 #define COLOR_RAM_OFFSET		0x0800

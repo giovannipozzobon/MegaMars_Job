@@ -49,13 +49,15 @@ BINFILESMC += $(BIN_DIR)/song.mod.addr.mc
 
 # -----------------------------------------------------------------------------
 
-# direction = 3 = CharTopBottomLeftRight
+# character mode = 1 = SuperExtendedAttributeMode
+# direction      = 3 = CharTopBottomLeftRight
 $(BIN_DIR)/gfx_chars0.bin: $(BIN_DIR)/gfx.bin
 	$(MC) $< cm1:1 d1:3 cl1:10000 rc1:0
 
-# direction = 1 = PixelTopBottomLeftRight
+# character mode = 1 = SuperExtendedAttributeMode
+# direction      = 2 = PixelLeftRightTopBottom
 $(BIN_DIR)/hm_chars0.bin: $(BIN_DIR)/hm.bin
-	$(MC) $< cm1:1 d1:3 cl1:20000 rc1:0
+	$(MC) $< cm1:1 d1:2 cl1:20000 rc1:0
 
 $(BIN_DIR)/alldata.bin: $(BINFILES)
 	$(MEGAADDRESS) $(BIN_DIR)/gfx_chars0.bin      00010000
