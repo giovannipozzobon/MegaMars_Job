@@ -10,7 +10,7 @@ multheight:		.macro a
 				sta 0xd774					; put in MULTINB
 				tya
 				sbc 0xd779					; add base height
-				sta zp:\a					; put height
+				sta zp:\a+128				; put height
 				.endm
 
 multheight8:	.macro a
@@ -44,8 +44,8 @@ copyheightlineA:
 			sta 0xd707						; inline DMA
 			.byte 0x80, 0x00				; sourceMB
 			.byte 0x81, 0x00				; destMB
-			.byte 0x82, 0					; Source skip rate (256ths of bytes)
-			.byte 0x83, 1					; Source skip rate (whole bytes)
+linescalelo:.byte 0x82, 0					; Source skip rate (256ths of bytes)
+linescalehi:.byte 0x83, 1					; Source skip rate (whole bytes)
 			.byte 0x84, 0					; Destination skip rate (256ths of bytes)
 			.byte 0x85, 1					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
 			.byte 0x00						; end of job options
@@ -58,6 +58,21 @@ dmachlsrc:	.word 0x0000					; src
 			.byte 0x00						; cmd hi
 			.word 0x0000					; modulo, ignored
 
+			rts
+
+; -----------------------------------------------------------------------------------------------
+
+initializemultregs:
+
+			lda #0							; initialize MULTiply registers
+			sta 0xd770
+			sta 0xd771
+			sta 0xd772
+			sta 0xd773
+			sta 0xd774
+			sta 0xd775
+			sta 0xd776
+			sta 0xd777
 			rts
 
 ; -----------------------------------------------------------------------------------------------
@@ -94,24 +109,18 @@ scaleheightline:
 
 renderheightline:
 
-			lda #0							; initialize MULTiply registers
-			sta 0xd770
-			sta 0xd771
-			sta 0xd772
-			sta 0xd773
-			sta 0xd774
-			sta 0xd775
-			sta 0xd776
-			sta 0xd777
-
+			jsr initializemultregs
 			lda #8							; get ready to multiply by 8
 			sta 0xd771
+
+			inc getpixel+0
 
 			ldy #0
 
 rhlloop:
-			lda HEIGHTLINES,y				; get height
+			lda HEIGHTLINES+0,y				; get colour
 			sta getpixel+0
+			lda HEIGHTLINES+128,y			; get height
 			sta 0xd774
 			clc
 			lda 0xd779
@@ -130,7 +139,7 @@ rhlloop:
 			.byte 0x85, 8					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
 			.byte 0x00						; end of job options
 			.byte 0x03						; fill, no chain
-			.word 4							; count
+			.word 1							; count
 getpixel:	.word 0x00fe					; fill value
 			.byte 0x00						; src bank and flags
 putpixel:	.word 0x0000					; dst
@@ -154,20 +163,6 @@ program_testdmalines:
 
 			inc frame
 
-			lda #0							; initialize MULTiply registers
-			sta 0xd770
-			sta 0xd771
-			sta 0xd772
-			sta 0xd773
-			sta 0xd774
-			sta 0xd775
-			sta 0xd776
-			sta 0xd777
-
-;			lda #0
-;			sta dmadst+0
-;			sta dmadst+1
-
 			ldx #0
 
 renderloop:
@@ -176,17 +171,24 @@ renderloop:
 			adc #0x10
 			sta 0xd020
 
-			lda frame
+			lda perspscale,x
+			sta linescalelo+1
+			clc
+			txa									; get current line
+			adc frame							; add offset based on frame number
 			jsr copyheightlineA
-			ldy #100						; set base to this
-			lda #64							; scale heightline by this
-			sta 0xd770						; MULTINA
+
+			jsr initializemultregs
+			lda perspbaseheight,x				; set base to this
+			tay
+			lda perspheight,x					; scale heightline by this
+			sta 0xd770							; MULTINA
 			jsr scaleheightline
 
 			jsr renderheightline
 
 			inx
-			cpx #1
+			cpx #8
 			bne renderloop
 
 			lda #0
@@ -194,6 +196,16 @@ renderloop:
 
 			rts
 
+ ; -----------------------------------------------------------------------------------------------
+
+perspbaseheight:
+			.byte 100, 102, 105, 108, 112, 117, 125, 132
+
+perspheight:
+			.byte 32, 35, 38, 42, 45, 48, 52, 55
+
+perspscale:
+			.byte 70, 60, 50, 40, 30, 20, 10, 0			
  ; -----------------------------------------------------------------------------------------------
 
 			.align 256
