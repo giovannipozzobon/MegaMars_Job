@@ -70,14 +70,14 @@ void program_init()
 
 		poke(&perspbaseheight+line, 60+(z>>8));
 		poke(&perspheight+line,     32+(scale>>1));
-		poke(&perspscalelo+line,    255 - scale);
+		poke(&perspscalelo+line,    200 - scale);
 		poke(&perspscalehi+line,    0);
 		poke(&perspxoffs+line,		scale>>2);
 
 		z += dz;
 		dz += 32; // distance 'stretch' DON'T TOUCH, THIS IS RIGHT!!!
 
-		scale += 5;
+		scale += 4;
 
 		line++;
 	}

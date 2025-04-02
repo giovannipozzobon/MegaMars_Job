@@ -164,9 +164,6 @@ rhlloop:
 			sta getpixel+0
 			lda HEIGHTLINES,y				; get height
 			sta 0xd774
-			lsr a
-			lsr a
-			sta drawheight
 			clc
 			lda 0xd779
 			adc columnlo,y
@@ -184,7 +181,7 @@ rhlloop:
 			.byte 0x85, 8					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
 			.byte 0x00						; end of job options
 			.byte 0x03						; fill, no chain
-drawheight:	.word 1							; count
+drawheight:	.word 32							; count
 getpixel:	.word 0x00fe					; fill value
 			.byte 0x00						; src bank and flags
 putpixel:	.word 0x0000					; dst
@@ -225,9 +222,10 @@ renderloop:
 			sta linescalehi1+1
 			sta linescalehi2+1
 			clc
-			lda perspxoffs,x
 			ldy frame
 			adc sine,y
+			lsr a
+			adc perspxoffs,x
 			sta dmachlsrc1+0
 			sta dmachlsrc2+0
 			clc
@@ -247,7 +245,7 @@ renderloop:
 			jsr renderheightline
 
 			inx
-			cpx #32
+			cpx #34
 			bne renderloop
 
 			lda #0
