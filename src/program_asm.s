@@ -181,7 +181,7 @@ rhlloop:
 			.byte 0x85, 8					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
 			.byte 0x00						; end of job options
 			.byte 0x03						; fill, no chain
-drawheight:	.word 32							; count
+drawheight:	.word 16							; count
 getpixel:	.word 0x00fe					; fill value
 			.byte 0x00						; src bank and flags
 putpixel:	.word 0x0000					; dst
@@ -218,8 +218,9 @@ renderloop:
 			sta linescalehi2+1
 			clc
 			ldy frame
-			adc sine,y
+			lda sine,y
 			lsr a
+			;lda #0
 			adc perspxoffs,x
 			sta dmachlsrc1+0
 			sta dmachlsrc2+0

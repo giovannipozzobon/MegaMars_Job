@@ -56,28 +56,34 @@ void program_init()
 		}
 	}
 
-	uint16_t dz = 512;
+	uint16_t dz = 8;
 	uint16_t z = 256;
 
-	uint16_t numlines = 64;
-
-	uint8_t scale = 0;
+	uint16_t numlines = 32;
+	uint16_t scaleheight = 255; // no bigger than 255!
+	uint16_t height = 200;
+	uint16_t width = 160;
+	uint16_t horizon = 20;
 
 	uint8_t line = 0;
 	while(line < numlines)
 	{
-		// poke(0xc800+line, (z>>8));
+		uint8_t index = numlines-line-1;
 
-		poke(&perspbaseheight+line, 60+(z>>8));
-		poke(&perspheight+line,     32+(scale>>1));
-		poke(&perspscalelo+line,    200 - scale);
-		poke(&perspscalehi+line,    0);
-		poke(&perspxoffs+line,		scale>>2);
+		uint16_t oneoverz = 65535/z;
+		uint16_t basescale = (height * oneoverz)>>8;
+		uint16_t fovscale = (width * oneoverz)>>8;
+
+		poke(0xc800+index, basescale);
+
+		poke(&perspbaseheight+index, horizon+basescale);
+		poke(&perspheight+index,     basescale);
+		poke(&perspscalelo+index,    200-fovscale);
+		poke(&perspscalehi+index,    0);
+		poke(&perspxoffs+index,		 fovscale>>2);
 
 		z += dz;
-		dz += 32; // distance 'stretch' DON'T TOUCH, THIS IS RIGHT!!!
-
-		scale += 4;
+		dz += 1; // distance 'stretch' DON'T TOUCH, THIS IS RIGHT!!!
 
 		line++;
 	}
