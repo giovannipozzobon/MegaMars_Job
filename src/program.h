@@ -16,5 +16,6 @@ extern uint8_t perspbaseheight;
 extern uint8_t perspheight;
 extern uint8_t perspscalelo;
 extern uint8_t perspscalehi;
+extern uint8_t perspxoffs;
 
 #endif

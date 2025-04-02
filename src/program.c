@@ -56,16 +56,49 @@ void program_init()
 		}
 	}
 
+	uint16_t dz = 512;
+	uint16_t z = 256;
+
+	uint16_t numlines = 64;
+
+	uint8_t scale = 0;
+
+	uint8_t line = 0;
+	while(line < numlines)
+	{
+		// poke(0xc800+line, (z>>8));
+
+		poke(&perspbaseheight+line, 60+(z>>8));
+		poke(&perspheight+line,     32+(scale>>1));
+		poke(&perspscalelo+line,    255 - scale);
+		poke(&perspscalehi+line,    0);
+		poke(&perspxoffs+line,		scale>>2);
+
+		z += dz;
+		dz += 32; // distance 'stretch' DON'T TOUCH, THIS IS RIGHT!!!
+
+		scale += 5;
+
+		line++;
+	}
+
 	// fill perspective tables
+	/*
 	for(uint16_t z=0; z<32; z++)
 	{
-		//perspbaseheight;
-		//perspheight;
-		//perspscale;
+		uint16_t startz = 33;
+		uint16_t currentz = startz - z;
+
+		uint8_t oneoverz = 256/currentz;
+
+		poke(0xc800+z, oneoverz);
 
 		poke(&perspbaseheight+z, 64 + 40*32/(33-z));
 		poke(&perspheight+z,           24*32/(33-z));
-		poke(&perspscalelo+z,    ((512 - 24*32/(33-z)) >> 0) & 0xff);
-		poke(&perspscalehi+z,    ((512 - 24*32/(33-z)) >> 8) & 0xff);
+
+		uint16_t scale = 64 - (32/(33-z));
+		poke(&perspscalelo+z,    0);
+		poke(&perspscalehi+z,    1);
 	}
+	*/
 }

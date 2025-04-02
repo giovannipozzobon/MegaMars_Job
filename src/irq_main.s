@@ -21,11 +21,11 @@ irq_main:
 
 			jsr program_testdmalines
 
-			lda #0x02
+			lda #0xfe
 			sta 0xd020
 			sta 0xd021
 
-			;jsr modplay_play
+			jsr modplay_play
 
 			lda #0x00
 			sta 0xd020

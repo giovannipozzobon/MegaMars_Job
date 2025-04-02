@@ -62,10 +62,6 @@ clearscreen:
 
 copyhgtcolsourceline:
 
-			; copy from heightmap/colormap, line X
-			sta dmachlsrc1+1
-			sta dmachlsrc2+1
-
 			sta 0xd707						; inline DMA
 			.byte 0x80, 0x00				; sourceMB
 			.byte 0x81, 0x00				; destMB
@@ -168,6 +164,9 @@ rhlloop:
 			sta getpixel+0
 			lda HEIGHTLINES,y				; get height
 			sta 0xd774
+			lsr a
+			lsr a
+			sta drawheight
 			clc
 			lda 0xd779
 			adc columnlo,y
@@ -185,7 +184,7 @@ rhlloop:
 			.byte 0x85, 8					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
 			.byte 0x00						; end of job options
 			.byte 0x03						; fill, no chain
-			.word 32						; count
+drawheight:	.word 1							; count
 getpixel:	.word 0x00fe					; fill value
 			.byte 0x00						; src bank and flags
 putpixel:	.word 0x0000					; dst
@@ -223,11 +222,16 @@ renderloop:
 			sta linescalelo1+1
 			sta linescalelo2+1
 			lda perspscalehi,x
-			sta linescalelo1+2
-			sta linescalelo2+2
+			sta linescalehi1+1
+			sta linescalehi2+1
+			lda perspxoffs,x
+			sta dmachlsrc1+0
+			sta dmachlsrc2+0
 			clc
 			txa									; get current line
-			adc frame							; add offset based on frame number
+			adc frame							; add y offset based on frame number
+			sta dmachlsrc1+1
+			sta dmachlsrc2+1
 			jsr copyhgtcolsourceline
 
 			jsr initializemultregs
@@ -240,7 +244,7 @@ renderloop:
 			jsr renderheightline
 
 			inx
-			cpx #20
+			cpx #32
 			bne renderloop
 
 			lda #0
@@ -253,19 +257,23 @@ renderloop:
 			.align 256
 			.public perspbaseheight
 perspbaseheight:
-			.space 32
+			.space 64
 
 			.public perspheight
 perspheight:
-			.space 32
+			.space 64
 
 			.public perspscalelo
 perspscalelo:
-			.space 32
+			.space 64
 
 			.public perspscalehi
 perspscalehi:
-			.space 32
+			.space 64
+
+			.public perspxoffs
+perspxoffs
+			.space 64
 
  ; -----------------------------------------------------------------------------------------------
 
