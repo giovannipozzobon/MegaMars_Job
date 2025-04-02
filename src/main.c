@@ -58,10 +58,10 @@ void main()
 	VIC4.NORRDEL		= 1;									// enable rrb double buffering
 	VIC4.DBLRR			= 1;									// disable double-height rrb
 	
-	VIC3.H640			= 0;									// enable 640 horizontal width
-	VIC3.V400			= 0;									// enable 400 vertical height
+	VIC3.H640			= 0;									// disable 640 horizontal width
+	VIC3.V400			= 1;									// disable 400 vertical height
 	VIC4.CHRYSCL		= 0;
-	VIC4.CHRXSCL		= 0x38;									// 0x78 is normal scaling, 0x32 is stretched
+	VIC4.CHRXSCL		= 0x3c;									// 0x78 is normal scaling, 0x32 is stretched, 0x3c is right for realHW
 
 	VIC4.DISPROWS		= 50;									// display 50 rows of text
 

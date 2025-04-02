@@ -200,7 +200,7 @@ putpixel:	.word 0x0000					; dst
 			.public program_testdmalines
 program_testdmalines:
 
-			lda #0
+			lda #0x0c
 			sta 0xd020
 
 			jsr clearscreen
@@ -210,11 +210,6 @@ program_testdmalines:
 			ldx #0
 
 renderloop:
-			clc
-			lda 0xd020
-			adc #0x10
-			sta 0xd020
-
 			lda perspscalelo,x
 			sta linescalelo1+1
 			sta linescalelo2+1
@@ -245,7 +240,7 @@ renderloop:
 			jsr renderheightline
 
 			inx
-			cpx #34
+			cpx #32
 			bne renderloop
 
 			lda #0
