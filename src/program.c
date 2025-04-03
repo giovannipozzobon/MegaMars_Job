@@ -59,12 +59,12 @@ void program_init()
 	uint16_t dz = 16;
 	uint16_t z = 256;
 
-	uint16_t numlines = 42;
+	uint16_t numlines = 32;
 	uint16_t scaleheight = 255; // no bigger than 255!
-	uint16_t height = 128;
+	uint16_t height = 200;
 	uint16_t width = 255;
-	uint16_t horizon = 60;
-	uint16_t heightscale = 127;
+	uint16_t horizon = 0;
+	uint16_t heightscale = 60;
 
 	uint8_t line = 0;
 	while(line < numlines)
@@ -73,15 +73,14 @@ void program_init()
 
 		uint16_t oneoverz = 65535/z;
 		uint16_t basescale = (height * oneoverz)>>8;
-		uint16_t fovscale = (width * oneoverz)>>8;
 
 		poke(0xc800+index, basescale);
 
 		poke(&perspbaseheight+index, horizon+basescale);
-		poke(&perspheight+index,     (heightscale*basescale)>>7);
-		poke(&perspscalelo+index,    ((300-fovscale) >> 0) & 0xff);
-		poke(&perspscalehi+index,    ((300-fovscale) >> 8) & 0xff);
-		poke(&perspxoffs+index,		 fovscale>>2);
+		poke(&perspheight+index,     (heightscale*oneoverz)>>7);
+		poke(&perspscalelo+index,    ((64+z>>2) >> 0) & 0xff);
+		poke(&perspscalehi+index,    ((64+z>>2) >> 8) & 0xff);
+		poke(&perspxoffs+index,		 2*numlines-line /*fovscale>>2*/);
 
 		z += dz;
 		dz += 0; // distance 'stretch' DON'T TOUCH, THIS IS RIGHT!!!
