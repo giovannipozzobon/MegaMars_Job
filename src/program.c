@@ -56,14 +56,15 @@ void program_init()
 		}
 	}
 
-	uint16_t dz = 8;
+	uint16_t dz = 16;
 	uint16_t z = 256;
 
-	uint16_t numlines = 32;
+	uint16_t numlines = 42;
 	uint16_t scaleheight = 255; // no bigger than 255!
-	uint16_t height = 200;
-	uint16_t width = 160;
-	uint16_t horizon = 20;
+	uint16_t height = 128;
+	uint16_t width = 255;
+	uint16_t horizon = 60;
+	uint16_t heightscale = 127;
 
 	uint8_t line = 0;
 	while(line < numlines)
@@ -77,13 +78,13 @@ void program_init()
 		poke(0xc800+index, basescale);
 
 		poke(&perspbaseheight+index, horizon+basescale);
-		poke(&perspheight+index,     basescale);
-		poke(&perspscalelo+index,    200-fovscale);
-		poke(&perspscalehi+index,    0);
+		poke(&perspheight+index,     (heightscale*basescale)>>7);
+		poke(&perspscalelo+index,    ((300-fovscale) >> 0) & 0xff);
+		poke(&perspscalehi+index,    ((300-fovscale) >> 8) & 0xff);
 		poke(&perspxoffs+index,		 fovscale>>2);
 
 		z += dz;
-		dz += 1; // distance 'stretch' DON'T TOUCH, THIS IS RIGHT!!!
+		dz += 0; // distance 'stretch' DON'T TOUCH, THIS IS RIGHT!!!
 
 		line++;
 	}

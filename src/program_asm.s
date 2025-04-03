@@ -173,15 +173,15 @@ rhlloop:
 			sta putpixel+1
 
 			sta 0xd707						; inline DMA
-			.byte 0x80, 0x00				; sourceMB
-			.byte 0x81, 0x00				; destMB
-			.byte 0x82, 0					; Source skip rate (256ths of bytes)
-			.byte 0x83, 1					; Source skip rate (whole bytes)
-			.byte 0x84, 0					; Destination skip rate (256ths of bytes)
+			;.byte 0x80, 0x00				; sourceMB
+			;.byte 0x81, 0x00				; destMB
+			;.byte 0x82, 0					; Source skip rate (256ths of bytes)
+			;.byte 0x83, 1					; Source skip rate (whole bytes)
+			;.byte 0x84, 0					; Destination skip rate (256ths of bytes)
 			.byte 0x85, 8					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
 			.byte 0x00						; end of job options
 			.byte 0x03						; fill, no chain
-drawheight:	.word 16							; count
+drawheight:	.word 8							; count
 getpixel:	.word 0x00fe					; fill value
 			.byte 0x00						; src bank and flags
 putpixel:	.word 0x0000					; dst
@@ -210,6 +210,9 @@ program_testdmalines:
 			ldx #0
 
 renderloop:
+			lda #0xfe
+			sta 0xd020
+
 			lda perspscalelo,x
 			sta linescalelo1+1
 			sta linescalelo2+1
@@ -231,6 +234,9 @@ renderloop:
 			sta dmachlsrc2+1
 			jsr copyhgtcolsourceline
 
+			lda #0xfd
+			sta 0xd020
+
 			jsr initializemultregs
 			lda perspbaseheight,x				; set base to this
 			tay
@@ -238,10 +244,16 @@ renderloop:
 			sta 0xd770							; MULTINA
 			jsr scaleheightline
 
+			lda #0xfc
+			sta 0xd020
+
 			jsr renderheightline
 
+			lda #0
+			sta 0xd020
+
 			inx
-			cpx #32
+			cpx #42
 			bne renderloop
 
 			lda #0
