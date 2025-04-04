@@ -14,7 +14,7 @@ void program_loaddata()
 {
 	fl_init();
 	fl_waiting();
-	floppy_iffl_fast_load_init("DATA");
+	floppy_iffl_fast_load_init("MEGAMARS.DATA");
 	floppy_iffl_fast_load(); // chars
 	floppy_iffl_fast_load(); // pal
 	floppy_iffl_fast_load(); // heightmap

@@ -109,7 +109,7 @@ $(EXE_DIR)/megamars.d81: $(EXE_DIR)/megamars.prg.mc  $(BIN_DIR)/alldata.bin
 	$(CC1541) -n "megamars" -i " 2025" -d 19 -v\
 	 \
 	 -f "megamars" -w $(EXE_DIR)/megamars.prg.mc \
-	 -f "data" -w $(BIN_DIR)/alldata.bin \
+	 -f "megamars.data" -w $(BIN_DIR)/alldata.bin \
 	$@
 
 # -----------------------------------------------------------------------------
