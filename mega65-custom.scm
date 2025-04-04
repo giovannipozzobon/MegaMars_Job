@@ -8,13 +8,6 @@
 		(type ram)
 	)
 
-	(memory hzd (address (#x0400 . #x11ff)) (type any)
-		(section
-			heap
-			zdata
-		)
-	)
-
 	(memory prog (address (#x1200 . #x5fff)) (type any)
 		(section
 			(programStart #x1200)
@@ -24,6 +17,13 @@
 			switch
 			cdata
 			data_init_table
+		)
+	)
+
+	(memory hzd (address (#x6000 . #x6fff)) (type any)
+		(section
+			heap
+			zdata
 		)
 	)
 ))

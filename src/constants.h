@@ -12,8 +12,8 @@
 #define HEIGHTMAP				0x20000
 #define COLORMAP				0x30000
 
-#define HEIGHTLINES				0x06000
-#define COLORLINES				0x07000
+#define HEIGHTLINES				0x08000
+#define COLORLINES				0x08100
 
 #define COLOR_RAM				0xff80000
 #define COLOR_RAM_OFFSET		0x0800
