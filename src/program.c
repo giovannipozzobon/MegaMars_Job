@@ -2,6 +2,7 @@
 #include "macros.h"
 #include "registers.h"
 #include "constants.h"
+#include "keyboard.h"
 #include "modplay.h"
 #include "iffl.h"
 #include "irqload.h"
@@ -25,6 +26,9 @@ void program_init()
 {
 	VIC2.BORDERCOL = 0x00;
 	VIC2.SCREENCOL = 0x00;
+
+	VIC2.DEN = 0;
+
 	modplay_init();
 	modplay_initmod(ATTICADDRESS, SAMPLEADRESS);
 	modplay_enable();
@@ -64,7 +68,7 @@ void program_init()
 	uint16_t height = 200;
 	uint16_t width = 255;
 	uint16_t horizon = 0;
-	uint16_t heightscale = 60;
+	uint16_t heightscale = 60; // no bigger than 64 otherwise it goes down again!
 
 	uint8_t line = 0;
 	while(line < numlines)
@@ -86,5 +90,19 @@ void program_init()
 		dz += 0; // distance 'stretch' DON'T TOUCH, THIS IS RIGHT!!!
 
 		line++;
+	}
+
+	VIC2.DEN = 1;
+}
+
+void program_update()
+{
+	if(keyboard_keypressed(KEYBOARD_CURSORRIGHT))
+	{
+		xoffset++;
+	}
+	else if(keyboard_keypressed(KEYBOARD_CURSORLEFT))
+	{
+		xoffset--;
 	}
 }

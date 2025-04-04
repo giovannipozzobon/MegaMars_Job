@@ -5,6 +5,9 @@
 
 frame		.byte 0
 
+			.public xoffset
+xoffset		.byte 0
+
 multheight:		.macro a
 				lda zp:\a					; get height
 				sta 0xd774					; put in MULTINB
@@ -274,7 +277,7 @@ renderloop:
 			;lda sine,y
 			;lsr a
 			;lsr a
-			lda #0
+			lda xoffset
 			adc perspxoffs,x
 			sta dmachlsrc1+0
 			sta dmachlsrc2+0
@@ -299,7 +302,7 @@ renderloop:
 			;sta 0xd020
 
 			txa
-			adc #0x08
+			adc #0x0c
 			;lda #0x04
 			sta drawheight
 

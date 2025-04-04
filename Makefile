@@ -32,7 +32,7 @@ VPATH = src
 
 # Common source files
 ASM_SRCS = decruncher.s iffl.s irqload.s irq_fastload.s irq_main.s startup.s program_asm.s
-C_SRCS = main.c dma.c modplay.c dmajobs.c program.c
+C_SRCS = keyboard.c main.c dma.c modplay.c dmajobs.c program.c
 
 OBJS = $(ASM_SRCS:%.s=$(EXE_DIR)/%.o) $(C_SRCS:%.c=$(EXE_DIR)/%.o)
 OBJS_DEBUG = $(ASM_SRCS:%.s=$(EXE_DIR)/%-debug.o) $(C_SRCS:%.c=$(EXE_DIR)/%-debug.o)

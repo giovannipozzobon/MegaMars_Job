@@ -4,6 +4,8 @@
 
 			.extern modplay_play
 			.extern program_testdmalines
+			.extern keyboard_update
+			.extern program_update
 
  ; ------------------------------------------------------------------------------------
 
@@ -25,7 +27,9 @@ irq_main:
 			;sta 0xd020
 			;sta 0xd021
 
-			;jsr modplay_play
+			jsr keyboard_update
+			jsr program_update
+			jsr modplay_play
 
 			;lda #0x00
 			;sta 0xd020
