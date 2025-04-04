@@ -54,20 +54,20 @@ BINFILESMC += $(BIN_DIR)/song.mod.addr.mc
 # character mode = 1 = SuperExtendedAttributeMode
 # direction      = 3 = CharTopBottomLeftRight
 $(BIN_DIR)/gfx_chars0.bin: $(BIN_DIR)/gfx.bin
-	$(MC) $< cm1:1 d1:3 cl1:10000 rc1:0
-
-# character mode = 1 = SuperExtendedAttributeMode
-# direction      = 2 = PixelLeftRightTopBottom
-$(BIN_DIR)/mapcol_pal0.bin: $(BIN_DIR)/mapcol.bin
-	$(MC) $< cm1:1 d1:2 cl1:20000 rc1:0
+	$(MC) $< cm1:1 d1:3 cl1:18000 rc1:0
 
 # character mode = 1 = SuperExtendedAttributeMode
 # direction      = 2 = PixelLeftRightTopBottom
 $(BIN_DIR)/maphgt_chars0.bin: $(BIN_DIR)/maphgt.bin
 	$(MC) $< cm1:1 d1:2 cl1:20000 rc1:0
 
+# character mode = 1 = SuperExtendedAttributeMode
+# direction      = 2 = PixelLeftRightTopBottom
+$(BIN_DIR)/mapcol_pal0.bin: $(BIN_DIR)/mapcol.bin
+	$(MC) $< cm1:1 d1:2 cl1:30000 rc1:0
+
 $(BIN_DIR)/alldata.bin: $(BINFILES)
-	$(MEGAADDRESS) $(BIN_DIR)/gfx_chars0.bin      00010000
+	$(MEGAADDRESS) $(BIN_DIR)/gfx_chars0.bin      00018000
 	$(MEGAADDRESS) $(BIN_DIR)/mapcol_pal0.bin     0000c000
 	$(MEGAADDRESS) $(BIN_DIR)/maphgt_chars0.bin   00020000
 	$(MEGAADDRESS) $(BIN_DIR)/mapcol_chars0.bin   00030000

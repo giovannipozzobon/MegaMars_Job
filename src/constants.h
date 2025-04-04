@@ -8,6 +8,7 @@
 #define PALETTE					0xc000
 
 #define GFXMEM					0x10000
+#define BKGMEM                  0x18000
 #define HEIGHTMAP				0x20000
 #define COLORMAP				0x30000
 

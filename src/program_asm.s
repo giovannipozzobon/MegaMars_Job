@@ -46,10 +46,10 @@ clearscreen:
 			.byte 0x84, 0					; Destination skip rate (256ths of bytes)
 			.byte 0x85, 1					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
 			.byte 0x00						; end of job options
-			.byte 0x03						; fill, no chain
+			.byte 0x00						; copy, no chain
 			.word 160*200					; count
-			.word 0x00fe					; fill value
-			.byte 0x00						; src bank and flags
+			.word ((BKGMEM>>0) & 0xffff)	; fill value
+			.byte ((BKGMEM>>16) & 0x0f)		; src bank and flags
 			.word 0x0000					; dst
 			.byte ((GFXMEM>>16) & 0x0f)		; dst bank and flags
 			.byte 0x00						; cmd hi
@@ -295,18 +295,18 @@ renderloop:
 			sta 0xd770							; MULTINA
 			jsr scaleheightline
 
-			lda #0xfb
-			sta 0xd020
+			;lda #0xfb
+			;sta 0xd020
 
 			txa
 			adc #0x08
-			;lda #0x01
+			;lda #0x04
 			sta drawheight
 
 			jsr renderheightline
 
-			lda #0xfe
-			sta 0xd020
+			;lda #0xfe
+			;sta 0xd020
 
 			inx
 			cpx #30-1
