@@ -64,7 +64,7 @@ void program_init()
 	uint16_t z = 128;
 
 	uint16_t numlines = 34;
-	uint16_t height = 200;
+	uint32_t height = 200;
 	uint16_t width = 255;
 	uint16_t horizon = 0;
 	uint16_t heightscale = 60; // no bigger than 64 otherwise it goes down again!
@@ -74,18 +74,18 @@ void program_init()
 	{
 		uint8_t index = numlines-line-1;
 
-		uint16_t oneoverz = 65535/z;
-		uint16_t basescale = (height * oneoverz)>>8;
+		uint32_t oneoverz = 65535/z;
+		uint32_t basescale = (height * oneoverz)>>8;
 
-		uint16_t pbh = horizon+basescale;
+		uint32_t pbh = horizon+basescale;
 		if(pbh > 255) pbh = 255;
-		uint16_t ph = (heightscale*oneoverz)>>7;
+		uint32_t ph = (heightscale*oneoverz)>>7;
 		if(ph > 255) ph = 255;
 
 		poke(&perspbaseheight+index, pbh);
 		poke(&perspheight+index,     ph);
-		poke(&perspscalelo+index,    ((40+z>>2) >> 0) & 0xff);
-		poke(&perspscalehi+index,    ((40+z>>2) >> 8) & 0xff);
+		poke(&perspscalelo+index,    ((40+(z>>2)) >> 0) & 0xff);
+		poke(&perspscalehi+index,    ((40+(z>>2)) >> 8) & 0xff);
 		poke(&perspxoffs+index,		 2*numlines-line /*fovscale>>2*/);
 
 		z += dz;
