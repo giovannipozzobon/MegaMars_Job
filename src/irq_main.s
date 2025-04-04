@@ -15,21 +15,21 @@ irq_main:
 			phy
 			phz
 
-			lda #0x01
+			lda #0xff
 			sta 0xd020
 			sta 0xd021
 
 			jsr program_testdmalines
 
-			lda #0xfe
-			sta 0xd020
-			sta 0xd021
+			;lda #0xfe
+			;sta 0xd020
+			;sta 0xd021
 
-			jsr modplay_play
+			;jsr modplay_play
 
-			lda #0x00
-			sta 0xd020
-			sta 0xd021
+			;lda #0x00
+			;sta 0xd020
+			;sta 0xd021
 
 			;lda #0x32
 			;sta 0xd012

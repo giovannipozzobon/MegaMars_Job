@@ -140,10 +140,63 @@ scaleheightline:
 			multheight8 16
 			multheight8 17
 			multheight8 18
-			multheight8 19
+			multheight8 19					; 20*8=160
 
 			lda #0							; put basepage back to zeropage
 			tab
+
+			rts
+
+ ; -----------------------------------------------------------------------------------------------
+
+renderfinalheightline:
+
+			jsr initializemultregs
+			lda #8							; get ready to multiply by 8
+			sta 0xd771
+
+			clc
+			ldy #0
+rfhlloop:	lda COLORLINES+0,y				; get colour
+			sta getfpixel+0
+			lda HEIGHTLINES,y				; get height
+			cmp #200
+			bcs skipfdraw
+
+			sta 0xd774						; multiply by 8
+			clc
+			lda 0xd779
+			adc columnlo,y
+			sta putfpixel+0
+			lda 0xd77a
+			adc columnhi,y
+			sta putfpixel+1
+
+			sec
+			lda #200
+			sbc HEIGHTLINES,y
+			sta drawfheight
+
+			sta 0xd707						; inline DMA
+			;.byte 0x80, 0x00				; sourceMB
+			;.byte 0x81, 0x00				; destMB
+			;.byte 0x82, 0					; Source skip rate (256ths of bytes)
+			;.byte 0x83, 1					; Source skip rate (whole bytes)
+			;.byte 0x84, 0					; Destination skip rate (256ths of bytes)
+			.byte 0x85, 8					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
+			.byte 0x00						; end of job options
+			.byte 0x03						; fill, no chain
+drawfheight:.word 1							; count
+getfpixel:	.word 0x00fe					; fill value
+			.byte 0x00						; src bank and flags
+putfpixel:	.word 0x0000					; dst
+			.byte ((GFXMEM>>16) & 0x0f)		; dst bank and flags
+			.byte 0x00						; cmd hi
+			.word 0x0000					; modulo, ignored
+
+skipfdraw:	iny
+			cpy #160
+			bne rfhlloop
 
 			rts
 
@@ -155,16 +208,13 @@ renderheightline:
 			lda #8							; get ready to multiply by 8
 			sta 0xd771
 
-			inc getpixel+0
-
+			clc
 			ldy #0
-
-rhlloop:
-			lda COLORLINES+0,y				; get colour
+rhlloop:	lda COLORLINES+0,y				; get colour
 			sta getpixel+0
 			lda HEIGHTLINES,y				; get height
-			sta 0xd774
-			clc
+			sta 0xd774						; multiply by 8
+			;clc
 			lda 0xd779
 			adc columnlo,y
 			sta putpixel+0
@@ -181,7 +231,7 @@ rhlloop:
 			.byte 0x85, 8					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
 			.byte 0x00						; end of job options
 			.byte 0x03						; fill, no chain
-drawheight:	.word 32							; count
+drawheight:	.word 8							; count
 getpixel:	.word 0x00fe					; fill value
 			.byte 0x00						; src bank and flags
 putpixel:	.word 0x0000					; dst
@@ -200,8 +250,8 @@ putpixel:	.word 0x0000					; dst
 			.public program_testdmalines
 program_testdmalines:
 
-			lda #0x0c
-			sta 0xd020
+			;lda #0x0c
+			;sta 0xd020
 
 			jsr clearscreen
 
@@ -245,20 +295,27 @@ renderloop:
 			sta 0xd770							; MULTINA
 			jsr scaleheightline
 
-			;lda #0xfc
-			;sta 0xd020
+			lda #0xfb
+			sta 0xd020
+
+			txa
+			adc #0x08
+			;lda #0x01
+			sta drawheight
 
 			jsr renderheightline
 
-			lda #0
+			lda #0xfe
 			sta 0xd020
 
 			inx
-			cpx #32
+			cpx #30-1
 			bne renderloop
 
-			lda #0
-			sta 0xd020
+			jsr renderfinalheightline
+
+			;lda #0
+			;sta 0xd020
 
 			rts
 

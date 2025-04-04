@@ -57,9 +57,9 @@ void program_init()
 	}
 
 	uint16_t dz = 16;
-	uint16_t z = 256;
+	uint16_t z = 128;
 
-	uint16_t numlines = 32;
+	uint16_t numlines = 34;
 	uint16_t scaleheight = 255; // no bigger than 255!
 	uint16_t height = 200;
 	uint16_t width = 255;
@@ -78,8 +78,8 @@ void program_init()
 
 		poke(&perspbaseheight+index, horizon+basescale);
 		poke(&perspheight+index,     (heightscale*oneoverz)>>7);
-		poke(&perspscalelo+index,    ((64+z>>2) >> 0) & 0xff);
-		poke(&perspscalehi+index,    ((64+z>>2) >> 8) & 0xff);
+		poke(&perspscalelo+index,    ((40+z>>2) >> 0) & 0xff);
+		poke(&perspscalehi+index,    ((40+z>>2) >> 8) & 0xff);
 		poke(&perspxoffs+index,		 2*numlines-line /*fovscale>>2*/);
 
 		z += dz;
@@ -87,24 +87,4 @@ void program_init()
 
 		line++;
 	}
-
-	// fill perspective tables
-	/*
-	for(uint16_t z=0; z<32; z++)
-	{
-		uint16_t startz = 33;
-		uint16_t currentz = startz - z;
-
-		uint8_t oneoverz = 256/currentz;
-
-		poke(0xc800+z, oneoverz);
-
-		poke(&perspbaseheight+z, 64 + 40*32/(33-z));
-		poke(&perspheight+z,           24*32/(33-z));
-
-		uint16_t scale = 64 - (32/(33-z));
-		poke(&perspscalelo+z,    0);
-		poke(&perspscalehi+z,    1);
-	}
-	*/
 }
