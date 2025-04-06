@@ -41,12 +41,12 @@ BINFILESINIT   = $(BIN_DIR)/song.mod
 BINFILESINITMC = $(BIN_DIR)/song.mod.addr.mc
 
 BINFILESMAP0  = $(BIN_DIR)/gfx0_chars0.bin
-BINFILESMAP0 += $(BIN_DIR)/mapcol0_pal0.bin
+BINFILESMAP0 += $(BIN_DIR)/gfx0_pal0.bin
 BINFILESMAP0 += $(BIN_DIR)/maphgt0_chars0.bin
 BINFILESMAP0 += $(BIN_DIR)/mapcol0_chars0.bin
 
 BINFILESMAP0MC  = $(BIN_DIR)/gfx0_chars0.bin.addr.mc
-BINFILESMAP0MC += $(BIN_DIR)/mapcol0_pal0.bin.addr.mc
+BINFILESMAP0MC += $(BIN_DIR)/gfx0_pal0.bin.addr.mc
 BINFILESMAP0MC += $(BIN_DIR)/maphgt0_chars0.bin.addr.mc
 BINFILESMAP0MC += $(BIN_DIR)/mapcol0_chars0.bin.addr.mc
 
@@ -56,7 +56,7 @@ $(BIN_DIR)/gfx0_chars0.bin: $(BIN_DIR)/gfx0.bin
 	$(MC) $< cm1:1 d1:3 cl1:18000 rc1:0
 $(BIN_DIR)/maphgt0_chars0.bin: $(BIN_DIR)/maphgt0.bin
 	$(MC) $< cm1:1 d1:2 cl1:20000 rc1:0
-$(BIN_DIR)/mapcol0_pal0.bin: $(BIN_DIR)/mapcol0.bin
+$(BIN_DIR)/mapcol0_chars0.bin: $(BIN_DIR)/mapcol0.bin
 	$(MC) $< cm1:1 d1:2 cl1:30000 rc1:0
 
 $(BIN_DIR)/init_dat.bin: $(BINFILESINIT)
@@ -66,11 +66,11 @@ $(BIN_DIR)/init_dat.bin: $(BINFILESINIT)
 
 $(BIN_DIR)/map0_dat.bin: $(BINFILESMAP0)
 	$(MEGAADDRESS) $(BIN_DIR)/gfx0_chars0.bin      00018000
-	$(MEGAADDRESS) $(BIN_DIR)/mapcol0_pal0.bin     0000c000
+	$(MEGAADDRESS) $(BIN_DIR)/gfx0_pal0.bin        0000c000
 	$(MEGAADDRESS) $(BIN_DIR)/maphgt0_chars0.bin   00020000
 	$(MEGAADDRESS) $(BIN_DIR)/mapcol0_chars0.bin   00030000
 	$(MEGACRUNCH)  $(BIN_DIR)/gfx0_chars0.bin.addr
-	$(MEGACRUNCH)  $(BIN_DIR)/mapcol0_pal0.bin.addr
+	$(MEGACRUNCH)  $(BIN_DIR)/gfx0_pal0.bin.addr
 	$(MEGACRUNCH)  $(BIN_DIR)/maphgt0_chars0.bin.addr
 	$(MEGACRUNCH)  $(BIN_DIR)/mapcol0_chars0.bin.addr
 	$(MEGAIFFL)    $(BINFILESMAP0MC) $(BIN_DIR)/map0_dat.bin
