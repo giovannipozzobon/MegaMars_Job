@@ -65,6 +65,13 @@ void program_loadmap2()
 	program_loadmapexit();
 }
 
+void program_loadmap3()
+{
+	program_loadmapinit();
+	floppy_iffl_fast_load_init("MAP3.DATA");
+	program_loadmapexit();
+}
+
 void program_init()
 {
 	VIC2.BORDERCOL = 0x00;
@@ -161,5 +168,9 @@ void program_update()
 	else if(keyboard_keyreleased(KEYBOARD_KEY3))
 	{
 		program_state = 3;
+	}
+	else if(keyboard_keyreleased(KEYBOARD_KEY4))
+	{
+		program_state = 4;
 	}
 }
