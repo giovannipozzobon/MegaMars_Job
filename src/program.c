@@ -48,14 +48,21 @@ void program_loadmap0()
 {
 	program_loadmapinit();
 	floppy_iffl_fast_load_init("MAP0.DATA");
-	program_loadmapexit()
+	program_loadmapexit();
 }
 
 void program_loadmap1()
 {
 	program_loadmapinit();
 	floppy_iffl_fast_load_init("MAP1.DATA");
-	program_loadmapexit()
+	program_loadmapexit();
+}
+
+void program_loadmap2()
+{
+	program_loadmapinit();
+	floppy_iffl_fast_load_init("MAP2.DATA");
+	program_loadmapexit();
 }
 
 void program_init()
@@ -150,5 +157,9 @@ void program_update()
 	else if(keyboard_keyreleased(KEYBOARD_KEY2))
 	{
 		program_state = 2;
+	}
+	else if(keyboard_keyreleased(KEYBOARD_KEY3))
+	{
+		program_state = 3;
 	}
 }

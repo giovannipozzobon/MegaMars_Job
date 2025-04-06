@@ -52,9 +52,16 @@ BINFILESMAP0MC += $(BIN_DIR)/mapcol0_chars0.bin.addr.mc
 BINFILESMAP1    = $(BIN_DIR)/gfx1_pal0.bin
 BINFILESMAP1   += $(BIN_DIR)/maphgt1_chars0.bin
 BINFILESMAP1   += $(BIN_DIR)/mapcol1_chars0.bin
-BINFILESMAP1MC += $(BIN_DIR)/gfx1_pal0.bin.addr.mc
+BINFILESMAP1MC  = $(BIN_DIR)/gfx1_pal0.bin.addr.mc
 BINFILESMAP1MC += $(BIN_DIR)/maphgt1_chars0.bin.addr.mc
 BINFILESMAP1MC += $(BIN_DIR)/mapcol1_chars0.bin.addr.mc
+
+BINFILESMAP2    = $(BIN_DIR)/gfx2_pal0.bin
+BINFILESMAP2   += $(BIN_DIR)/maphgt2_chars0.bin
+BINFILESMAP2   += $(BIN_DIR)/mapcol2_chars0.bin
+BINFILESMAP2MC  = $(BIN_DIR)/gfx2_pal0.bin.addr.mc
+BINFILESMAP2MC += $(BIN_DIR)/maphgt2_chars0.bin.addr.mc
+BINFILESMAP2MC += $(BIN_DIR)/mapcol2_chars0.bin.addr.mc
 
 # -----------------------------------------------------------------------------
 
@@ -73,6 +80,13 @@ $(BIN_DIR)/gfx1_pal0.bin: $(BIN_DIR)/gfx1.bin
 $(BIN_DIR)/maphgt1_chars0.bin: $(BIN_DIR)/maphgt1.bin
 	$(MC) $< cm1:1 d1:2 cl1:20000 rc1:0
 $(BIN_DIR)/mapcol1_chars0.bin: $(BIN_DIR)/mapcol1.bin
+	$(MC) $< cm1:1 d1:2 cl1:30000 rc1:0
+
+$(BIN_DIR)/gfx2_pal0.bin: $(BIN_DIR)/gfx2.bin
+	$(MC) $< cm1:1 d1:3 cl1:18000 rc1:0
+$(BIN_DIR)/maphgt2_chars0.bin: $(BIN_DIR)/maphgt2.bin
+	$(MC) $< cm1:1 d1:2 cl1:20000 rc1:0
+$(BIN_DIR)/mapcol2_chars0.bin: $(BIN_DIR)/mapcol2.bin
 	$(MC) $< cm1:1 d1:2 cl1:30000 rc1:0
 
 $(BIN_DIR)/init_dat.bin: $(BINFILESINIT)
@@ -100,6 +114,15 @@ $(BIN_DIR)/map1_dat.bin: $(BINFILESMAP1)
 	$(MEGACRUNCH)  $(BIN_DIR)/mapcol1_chars0.bin.addr
 	$(MEGAIFFL)    $(BINFILESMAP1MC) $(BIN_DIR)/map1_dat.bin
 
+$(BIN_DIR)/map2_dat.bin: $(BINFILESMAP2)
+	$(MEGAADDRESS) $(BIN_DIR)/gfx2_pal0.bin        0000c000
+	$(MEGAADDRESS) $(BIN_DIR)/maphgt2_chars0.bin   00020000
+	$(MEGAADDRESS) $(BIN_DIR)/mapcol2_chars0.bin   00030000
+	$(MEGACRUNCH)  $(BIN_DIR)/gfx2_pal0.bin.addr
+	$(MEGACRUNCH)  $(BIN_DIR)/maphgt2_chars0.bin.addr
+	$(MEGACRUNCH)  $(BIN_DIR)/mapcol2_chars0.bin.addr
+	$(MEGAIFFL)    $(BINFILESMAP2MC) $(BIN_DIR)/map2_dat.bin
+
 $(EXE_DIR)/%.o: %.s
 	as6502 --target=mega65 --list-file=$(@:%.o=%.lst) -o $@ $<
 
@@ -125,7 +148,7 @@ $(EXE_DIR)/megamars.prg.mc: $(EXE_DIR)/megamars.prg
 
 # -----------------------------------------------------------------------------
 
-$(EXE_DIR)/megamars.d81: $(EXE_DIR)/megamars.prg.mc  $(BIN_DIR)/init_dat.bin $(BIN_DIR)/map0_dat.bin $(BIN_DIR)/map1_dat.bin
+$(EXE_DIR)/megamars.d81: $(EXE_DIR)/megamars.prg.mc  $(BIN_DIR)/init_dat.bin $(BIN_DIR)/map0_dat.bin $(BIN_DIR)/map1_dat.bin $(BIN_DIR)/map2_dat.bin
 	$(RM) $@
 	$(CC1541) -n "megamars" -i " 2025" -d 19 -v\
 	 \
@@ -133,6 +156,7 @@ $(EXE_DIR)/megamars.d81: $(EXE_DIR)/megamars.prg.mc  $(BIN_DIR)/init_dat.bin $(B
 	 -f "megamars.data" -w $(BIN_DIR)/init_dat.bin \
 	 -f "map0.data" -w $(BIN_DIR)/map0_dat.bin \
 	 -f "map1.data" -w $(BIN_DIR)/map1_dat.bin \
+	 -f "map2.data" -w $(BIN_DIR)/map2_dat.bin \
 	$@
 
 # -----------------------------------------------------------------------------

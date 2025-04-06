@@ -5,6 +5,7 @@
 
 			.extern program_loadmap0
 			.extern program_loadmap1
+			.extern program_loadmap2
 
 frame		.byte 0
 
@@ -52,7 +53,11 @@ pml2:		cmp #2
 			bne pml3
 			jsr program_loadmap1
 			jmp program_mainloop
-pml3:		jmp program_mainloop
+pml3:		cmp #3
+			bne pml4
+			jsr program_loadmap2
+			jmp program_mainloop
+pml4:		jmp program_mainloop
 
 ; -----------------------------------------------------------------------------------------------
 
