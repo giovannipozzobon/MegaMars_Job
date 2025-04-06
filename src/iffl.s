@@ -34,16 +34,16 @@ floppy_iffl_fast_load:
 		tax
 		lda fastload_iffl_start_address_and_size+0,x
 		sta fastload_address+0
-		sta zp:_Zp+1
+		sta zp:_Zp+141	; dc_get_zp
 		lda fastload_iffl_start_address_and_size+1,x
 		sta fastload_address+1
-		sta zp:_Zp+2
+		sta zp:_Zp+142
 		lda fastload_iffl_start_address_and_size+2,x
 		sta fastload_address+2
-		sta zp:_Zp+3
+		sta zp:_Zp+143
 		lda fastload_iffl_start_address_and_size+3,x
 		sta fastload_address+3
-		sta zp:_Zp+4
+		sta zp:_Zp+144
 
 		lda fastload_iffl_start_address_and_size+4,x
 		sta fl_iffl_sizeremaining+0

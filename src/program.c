@@ -19,7 +19,7 @@ void program_loaddata()
 	floppy_iffl_fast_load(); // chars
 	floppy_iffl_fast_load(); // song
 
-	floppy_iffl_fast_load_init("MAP1.DATA");
+	floppy_iffl_fast_load_init("MAP0.DATA");
 	floppy_iffl_fast_load(); // pal
 	floppy_iffl_fast_load(); // heightmap
 	floppy_iffl_fast_load(); // colourmap
@@ -34,6 +34,7 @@ void program_loadmap0()
 
 	floppy_iffl_fast_load_init("MAP0.DATA");
 	floppy_iffl_fast_load(); // pal
+	dma_runjob((__far char *)&dma_copypalette);
 	floppy_iffl_fast_load(); // heightmap
 	floppy_iffl_fast_load(); // colourmap
 
@@ -48,6 +49,7 @@ void program_loadmap1()
 
 	floppy_iffl_fast_load_init("MAP1.DATA");
 	floppy_iffl_fast_load(); // pal
+	dma_runjob((__far char *)&dma_copypalette);
 	floppy_iffl_fast_load(); // heightmap
 	floppy_iffl_fast_load(); // colourmap
 
