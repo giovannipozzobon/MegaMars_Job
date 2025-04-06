@@ -40,31 +40,23 @@ OBJS_DEBUG = $(ASM_SRCS:%.s=$(EXE_DIR)/%-debug.o) $(C_SRCS:%.c=$(EXE_DIR)/%-debu
 BINFILESINIT   = $(BIN_DIR)/song.mod
 BINFILESINITMC = $(BIN_DIR)/song.mod.addr.mc
 
-BINFILESMAP0  = $(BIN_DIR)/gfx_chars0.bin
-BINFILESMAP0 += $(BIN_DIR)/mapcol_pal0.bin
-BINFILESMAP0 += $(BIN_DIR)/maphgt_chars0.bin
-BINFILESMAP0 += $(BIN_DIR)/mapcol_chars0.bin
+BINFILESMAP0  = $(BIN_DIR)/gfx0_chars0.bin
+BINFILESMAP0 += $(BIN_DIR)/mapcol0_pal0.bin
+BINFILESMAP0 += $(BIN_DIR)/maphgt0_chars0.bin
+BINFILESMAP0 += $(BIN_DIR)/mapcol0_chars0.bin
 
-BINFILESMAP0MC  = $(BIN_DIR)/gfx_chars0.bin.addr.mc
-BINFILESMAP0MC += $(BIN_DIR)/mapcol_pal0.bin.addr.mc
-BINFILESMAP0MC += $(BIN_DIR)/maphgt_chars0.bin.addr.mc
-BINFILESMAP0MC += $(BIN_DIR)/mapcol_chars0.bin.addr.mc
+BINFILESMAP0MC  = $(BIN_DIR)/gfx0_chars0.bin.addr.mc
+BINFILESMAP0MC += $(BIN_DIR)/mapcol0_pal0.bin.addr.mc
+BINFILESMAP0MC += $(BIN_DIR)/maphgt0_chars0.bin.addr.mc
+BINFILESMAP0MC += $(BIN_DIR)/mapcol0_chars0.bin.addr.mc
 
 # -----------------------------------------------------------------------------
 
-# character mode = 1 = SuperExtendedAttributeMode
-# direction      = 3 = CharTopBottomLeftRight
-$(BIN_DIR)/gfx_chars0.bin: $(BIN_DIR)/gfx.bin
+$(BIN_DIR)/gfx0_chars0.bin: $(BIN_DIR)/gfx0.bin
 	$(MC) $< cm1:1 d1:3 cl1:18000 rc1:0
-
-# character mode = 1 = SuperExtendedAttributeMode
-# direction      = 2 = PixelLeftRightTopBottom
-$(BIN_DIR)/maphgt_chars0.bin: $(BIN_DIR)/maphgt.bin
+$(BIN_DIR)/maphgt0_chars0.bin: $(BIN_DIR)/maphgt0.bin
 	$(MC) $< cm1:1 d1:2 cl1:20000 rc1:0
-
-# character mode = 1 = SuperExtendedAttributeMode
-# direction      = 2 = PixelLeftRightTopBottom
-$(BIN_DIR)/mapcol_pal0.bin: $(BIN_DIR)/mapcol.bin
+$(BIN_DIR)/mapcol0_pal0.bin: $(BIN_DIR)/mapcol0.bin
 	$(MC) $< cm1:1 d1:2 cl1:30000 rc1:0
 
 $(BIN_DIR)/init_dat.bin: $(BINFILESINIT)
@@ -73,14 +65,14 @@ $(BIN_DIR)/init_dat.bin: $(BINFILESINIT)
 	$(MEGAIFFL)    $(BINFILESINITMC) $(BIN_DIR)/init_dat.bin
 
 $(BIN_DIR)/map0_dat.bin: $(BINFILESMAP0)
-	$(MEGAADDRESS) $(BIN_DIR)/gfx_chars0.bin      00018000
-	$(MEGAADDRESS) $(BIN_DIR)/mapcol_pal0.bin     0000c000
-	$(MEGAADDRESS) $(BIN_DIR)/maphgt_chars0.bin   00020000
-	$(MEGAADDRESS) $(BIN_DIR)/mapcol_chars0.bin   00030000
-	$(MEGACRUNCH)  $(BIN_DIR)/gfx_chars0.bin.addr
-	$(MEGACRUNCH)  $(BIN_DIR)/mapcol_pal0.bin.addr
-	$(MEGACRUNCH)  $(BIN_DIR)/maphgt_chars0.bin.addr
-	$(MEGACRUNCH)  $(BIN_DIR)/mapcol_chars0.bin.addr
+	$(MEGAADDRESS) $(BIN_DIR)/gfx0_chars0.bin      00018000
+	$(MEGAADDRESS) $(BIN_DIR)/mapcol0_pal0.bin     0000c000
+	$(MEGAADDRESS) $(BIN_DIR)/maphgt0_chars0.bin   00020000
+	$(MEGAADDRESS) $(BIN_DIR)/mapcol0_chars0.bin   00030000
+	$(MEGACRUNCH)  $(BIN_DIR)/gfx0_chars0.bin.addr
+	$(MEGACRUNCH)  $(BIN_DIR)/mapcol0_pal0.bin.addr
+	$(MEGACRUNCH)  $(BIN_DIR)/maphgt0_chars0.bin.addr
+	$(MEGACRUNCH)  $(BIN_DIR)/mapcol0_chars0.bin.addr
 	$(MEGAIFFL)    $(BINFILESMAP0MC) $(BIN_DIR)/map0_dat.bin
 
 $(EXE_DIR)/%.o: %.s
