@@ -56,30 +56,6 @@ pml3:		jmp program_mainloop
 
 ; -----------------------------------------------------------------------------------------------
 
-clearscreen:
-
-			sta 0xd707						; inline DMA
-			.byte 0x80, 0x00				; sourceMB
-			.byte 0x81, 0x00				; destMB
-			.byte 0x82, 0					; Source skip rate (256ths of bytes)
-			.byte 0x83, 1					; Source skip rate (whole bytes)
-			.byte 0x84, 0					; Destination skip rate (256ths of bytes)
-			.byte 0x85, 1					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
-			.byte 0x00						; end of job options
-			.byte 0x00						; copy, no chain
-			.word 160*200					; count
-			.word ((BKGMEM>>0) & 0xffff)	; fill value
-			.byte ((BKGMEM>>16) & 0x0f)		; src bank and flags
-			.word 0x0000					; dst
-			.byte ((GFXMEM>>16) & 0x0f)		; dst bank and flags
-			.byte 0x00						; cmd hi
-			.word 0x0000					; modulo, ignored
-
-			rts
-
-; -----------------------------------------------------------------------------------------------
-
-
 copyhgtcolsourceline:
 
 			sta 0xd707						; inline DMA
@@ -267,13 +243,11 @@ putpixel:	.word 0x0000					; dst
 
  ; -----------------------------------------------------------------------------------------------
 
-			.public program_testdmalines
-program_testdmalines:
+			.public program_rendervoxels
+program_rendervoxels:
 
 			;lda #0x0c
 			;sta 0xd020
-
-			jsr clearscreen
 
 			dec frame
 

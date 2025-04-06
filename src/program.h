@@ -6,6 +6,7 @@ void program_init();
 void program_update();
 
 extern void program_mainloop();
+extern void clearscreen();
 
 extern void irq_main();
 

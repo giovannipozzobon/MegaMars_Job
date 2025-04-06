@@ -32,6 +32,7 @@ void program_loadmap0()
 	fl_init();
 	fl_waiting();
 
+	clearscreen();
 	floppy_iffl_fast_load_init("MAP0.DATA");
 	floppy_iffl_fast_load(); // pal
 	dma_runjob((__far char *)&dma_copypalette);
@@ -47,6 +48,7 @@ void program_loadmap1()
 	fl_init();
 	fl_waiting();
 
+	clearscreen();
 	floppy_iffl_fast_load_init("MAP1.DATA");
 	floppy_iffl_fast_load(); // pal
 	dma_runjob((__far char *)&dma_copypalette);
