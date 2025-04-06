@@ -27,36 +27,35 @@ void program_loaddata()
 	fl_exit();
 }
 
-void program_loadmap0()
+void program_loadmapinit()
 {
 	fl_init();
 	fl_waiting();
-
 	clearscreen();
-	floppy_iffl_fast_load_init("MAP0.DATA");
+}
+
+void program_loadmapexit()
+{
 	floppy_iffl_fast_load(); // pal
 	dma_runjob((__far char *)&dma_copypalette);
 	floppy_iffl_fast_load(); // heightmap
 	floppy_iffl_fast_load(); // colourmap
-
 	fl_exit();
 	program_state = 0;
 }
 
+void program_loadmap0()
+{
+	program_loadmapinit();
+	floppy_iffl_fast_load_init("MAP0.DATA");
+	program_loadmapexit()
+}
+
 void program_loadmap1()
 {
-	fl_init();
-	fl_waiting();
-
-	clearscreen();
+	program_loadmapinit();
 	floppy_iffl_fast_load_init("MAP1.DATA");
-	floppy_iffl_fast_load(); // pal
-	dma_runjob((__far char *)&dma_copypalette);
-	floppy_iffl_fast_load(); // heightmap
-	floppy_iffl_fast_load(); // colourmap
-
-	fl_exit();
-	program_state = 0;
+	program_loadmapexit()
 }
 
 void program_init()
