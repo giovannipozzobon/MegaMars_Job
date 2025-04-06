@@ -3,10 +3,17 @@
 			.rtmodel cpu, "*"
 			.extern _Zp
 
+			.extern program_loadmap0
+			.extern program_loadmap1
+
 frame		.byte 0
 
 			.public xoffset
 xoffset		.byte 0
+
+			.public program_state
+program_state
+			.byte 0
 
 multheight:		.macro a
 				lda zp:\a					; get height
@@ -35,7 +42,17 @@ program_mainloop:
 			lda 0xd020
 			lda 0xd020
 			lda 0xd020
+			lda program_state
+			beq program_mainloop
+			cmp #1
+			bne pml2
+			jsr program_loadmap0
 			jmp program_mainloop
+pml2:		cmp #2
+			bne pml3
+			jsr program_loadmap1
+			jmp program_mainloop
+pml3:		jmp program_mainloop
 
 ; -----------------------------------------------------------------------------------------------
 

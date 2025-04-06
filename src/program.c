@@ -19,12 +19,40 @@ void program_loaddata()
 	floppy_iffl_fast_load(); // chars
 	floppy_iffl_fast_load(); // song
 
+	floppy_iffl_fast_load_init("MAP1.DATA");
+	floppy_iffl_fast_load(); // pal
+	floppy_iffl_fast_load(); // heightmap
+	floppy_iffl_fast_load(); // colourmap
+
+	fl_exit();
+}
+
+void program_loadmap0()
+{
+	fl_init();
+	fl_waiting();
+
 	floppy_iffl_fast_load_init("MAP0.DATA");
 	floppy_iffl_fast_load(); // pal
 	floppy_iffl_fast_load(); // heightmap
 	floppy_iffl_fast_load(); // colourmap
 
 	fl_exit();
+	program_state = 0;
+}
+
+void program_loadmap1()
+{
+	fl_init();
+	fl_waiting();
+
+	floppy_iffl_fast_load_init("MAP1.DATA");
+	floppy_iffl_fast_load(); // pal
+	floppy_iffl_fast_load(); // heightmap
+	floppy_iffl_fast_load(); // colourmap
+
+	fl_exit();
+	program_state = 0;
 }
 
 void program_init()
@@ -111,5 +139,13 @@ void program_update()
 	else if(keyboard_keypressed(KEYBOARD_CURSORLEFT))
 	{
 		xoffset--;
+	}
+	else if(keyboard_keyreleased(KEYBOARD_KEY1))
+	{
+		program_state = 1;
+	}
+	else if(keyboard_keyreleased(KEYBOARD_KEY2))
+	{
+		program_state = 2;
 	}
 }
