@@ -37,17 +37,18 @@ C_SRCS = keyboard.c main.c dma.c modplay.c dmajobs.c program.c
 OBJS = $(ASM_SRCS:%.s=$(EXE_DIR)/%.o) $(C_SRCS:%.c=$(EXE_DIR)/%.o)
 OBJS_DEBUG = $(ASM_SRCS:%.s=$(EXE_DIR)/%-debug.o) $(C_SRCS:%.c=$(EXE_DIR)/%-debug.o)
 
-BINFILES  = $(BIN_DIR)/gfx_chars0.bin
-BINFILES += $(BIN_DIR)/mapcol_pal0.bin
-BINFILES += $(BIN_DIR)/maphgt_chars0.bin
-BINFILES += $(BIN_DIR)/mapcol_chars0.bin
-BINFILES += $(BIN_DIR)/song.mod
+BINFILESINIT   = $(BIN_DIR)/song.mod
+BINFILESINITMC = $(BIN_DIR)/song.mod.addr.mc
 
-BINFILESMC  = $(BIN_DIR)/gfx_chars0.bin.addr.mc
-BINFILESMC += $(BIN_DIR)/mapcol_pal0.bin.addr.mc
-BINFILESMC += $(BIN_DIR)/maphgt_chars0.bin.addr.mc
-BINFILESMC += $(BIN_DIR)/mapcol_chars0.bin.addr.mc
-BINFILESMC += $(BIN_DIR)/song.mod.addr.mc
+BINFILESMAP0  = $(BIN_DIR)/gfx_chars0.bin
+BINFILESMAP0 += $(BIN_DIR)/mapcol_pal0.bin
+BINFILESMAP0 += $(BIN_DIR)/maphgt_chars0.bin
+BINFILESMAP0 += $(BIN_DIR)/mapcol_chars0.bin
+
+BINFILESMAP0MC  = $(BIN_DIR)/gfx_chars0.bin.addr.mc
+BINFILESMAP0MC += $(BIN_DIR)/mapcol_pal0.bin.addr.mc
+BINFILESMAP0MC += $(BIN_DIR)/maphgt_chars0.bin.addr.mc
+BINFILESMAP0MC += $(BIN_DIR)/mapcol_chars0.bin.addr.mc
 
 # -----------------------------------------------------------------------------
 
@@ -66,18 +67,21 @@ $(BIN_DIR)/maphgt_chars0.bin: $(BIN_DIR)/maphgt.bin
 $(BIN_DIR)/mapcol_pal0.bin: $(BIN_DIR)/mapcol.bin
 	$(MC) $< cm1:1 d1:2 cl1:30000 rc1:0
 
-$(BIN_DIR)/alldata.bin: $(BINFILES)
+$(BIN_DIR)/init_dat.bin: $(BINFILESINIT)
+	$(MEGAADDRESS) $(BIN_DIR)/song.mod            08000000
+	$(MEGACRUNCH)  $(BIN_DIR)/song.mod.addr
+	$(MEGAIFFL)    $(BINFILESINITMC) $(BIN_DIR)/init_dat.bin
+
+$(BIN_DIR)/map0_dat.bin: $(BINFILESMAP0)
 	$(MEGAADDRESS) $(BIN_DIR)/gfx_chars0.bin      00018000
 	$(MEGAADDRESS) $(BIN_DIR)/mapcol_pal0.bin     0000c000
 	$(MEGAADDRESS) $(BIN_DIR)/maphgt_chars0.bin   00020000
 	$(MEGAADDRESS) $(BIN_DIR)/mapcol_chars0.bin   00030000
-	$(MEGAADDRESS) $(BIN_DIR)/song.mod            08000000
-	$(MEGACRUNCH) $(BIN_DIR)/gfx_chars0.bin.addr
-	$(MEGACRUNCH) $(BIN_DIR)/mapcol_pal0.bin.addr
-	$(MEGACRUNCH) $(BIN_DIR)/maphgt_chars0.bin.addr
-	$(MEGACRUNCH) $(BIN_DIR)/mapcol_chars0.bin.addr
-	$(MEGACRUNCH) $(BIN_DIR)/song.mod.addr
-	$(MEGAIFFL) $(BINFILESMC) $(BIN_DIR)/alldata.bin
+	$(MEGACRUNCH)  $(BIN_DIR)/gfx_chars0.bin.addr
+	$(MEGACRUNCH)  $(BIN_DIR)/mapcol_pal0.bin.addr
+	$(MEGACRUNCH)  $(BIN_DIR)/maphgt_chars0.bin.addr
+	$(MEGACRUNCH)  $(BIN_DIR)/mapcol_chars0.bin.addr
+	$(MEGAIFFL)    $(BINFILESMAP0MC) $(BIN_DIR)/map0_dat.bin
 
 $(EXE_DIR)/%.o: %.s
 	as6502 --target=mega65 --list-file=$(@:%.o=%.lst) -o $@ $<
@@ -104,12 +108,13 @@ $(EXE_DIR)/megamars.prg.mc: $(EXE_DIR)/megamars.prg
 
 # -----------------------------------------------------------------------------
 
-$(EXE_DIR)/megamars.d81: $(EXE_DIR)/megamars.prg.mc  $(BIN_DIR)/alldata.bin
+$(EXE_DIR)/megamars.d81: $(EXE_DIR)/megamars.prg.mc  $(BIN_DIR)/init_dat.bin $(BIN_DIR)/map0_dat.bin
 	$(RM) $@
 	$(CC1541) -n "megamars" -i " 2025" -d 19 -v\
 	 \
 	 -f "megamars" -w $(EXE_DIR)/megamars.prg.mc \
-	 -f "megamars.data" -w $(BIN_DIR)/alldata.bin \
+	 -f "megamars.data" -w $(BIN_DIR)/init_dat.bin \
+	 -f "map0.data" -w $(BIN_DIR)/map0_dat.bin \
 	$@
 
 # -----------------------------------------------------------------------------
