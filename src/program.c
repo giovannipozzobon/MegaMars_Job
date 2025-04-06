@@ -18,7 +18,7 @@ void program_loaddata()
 	floppy_iffl_fast_load_init("MEGAMARS.DATA");
 	floppy_iffl_fast_load(); // song
 
-	floppy_iffl_fast_load_init("MAP0.DATA");
+	floppy_iffl_fast_load_init("MAP1.DATA");
 	floppy_iffl_fast_load(); // chars
 	floppy_iffl_fast_load(); // pal
 	floppy_iffl_fast_load(); // heightmap
