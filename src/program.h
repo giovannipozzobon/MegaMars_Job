@@ -6,8 +6,11 @@ void program_init();
 void program_update();
 
 extern void program_mainloop();
+extern void clearscreen();
 
 extern void irq_main();
+
+extern uint8_t program_state;
 
 extern uint8_t xoffset;
 

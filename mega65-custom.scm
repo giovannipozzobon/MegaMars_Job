@@ -1,6 +1,6 @@
 (define memories
 '(
-	(memory zeroPage (address (#x2 . #x7f)) (type ram) (qualifier zpage)
+	(memory zeroPage (address (#x2 . #xff)) (type ram) (qualifier zpage)
 		(section (registers #x2))
 	)
 	

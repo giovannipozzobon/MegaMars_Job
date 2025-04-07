@@ -3,10 +3,19 @@
 			.rtmodel cpu, "*"
 			.extern _Zp
 
+			.extern program_loadmap0
+			.extern program_loadmap1
+			.extern program_loadmap2
+			.extern program_loadmap3
+
 frame		.byte 0
 
 			.public xoffset
 xoffset		.byte 0
+
+			.public program_state
+program_state
+			.byte 0
 
 multheight:		.macro a
 				lda zp:\a					; get height
@@ -35,33 +44,27 @@ program_mainloop:
 			lda 0xd020
 			lda 0xd020
 			lda 0xd020
+			lda program_state
+			beq program_mainloop
+			cmp #1
+			bne pml2
+			jsr program_loadmap0
 			jmp program_mainloop
+pml2:		cmp #2
+			bne pml3
+			jsr program_loadmap1
+			jmp program_mainloop
+pml3:		cmp #3
+			bne pml4
+			jsr program_loadmap2
+			jmp program_mainloop
+pml4:		cmp #4
+			bne pml5
+			jsr program_loadmap3
+			jmp program_mainloop
+pml5:		jmp program_mainloop
 
 ; -----------------------------------------------------------------------------------------------
-
-clearscreen:
-
-			sta 0xd707						; inline DMA
-			.byte 0x80, 0x00				; sourceMB
-			.byte 0x81, 0x00				; destMB
-			.byte 0x82, 0					; Source skip rate (256ths of bytes)
-			.byte 0x83, 1					; Source skip rate (whole bytes)
-			.byte 0x84, 0					; Destination skip rate (256ths of bytes)
-			.byte 0x85, 1					; Destination skip rate (whole bytes) skip 8 bytes to get to next vertical pixel
-			.byte 0x00						; end of job options
-			.byte 0x00						; copy, no chain
-			.word 160*200					; count
-			.word ((BKGMEM>>0) & 0xffff)	; fill value
-			.byte ((BKGMEM>>16) & 0x0f)		; src bank and flags
-			.word 0x0000					; dst
-			.byte ((GFXMEM>>16) & 0x0f)		; dst bank and flags
-			.byte 0x00						; cmd hi
-			.word 0x0000					; modulo, ignored
-
-			rts
-
-; -----------------------------------------------------------------------------------------------
-
 
 copyhgtcolsourceline:
 
@@ -250,13 +253,11 @@ putpixel:	.word 0x0000					; dst
 
  ; -----------------------------------------------------------------------------------------------
 
-			.public program_testdmalines
-program_testdmalines:
+			.public program_rendervoxels
+program_rendervoxels:
 
 			;lda #0x0c
 			;sta 0xd020
-
-			jsr clearscreen
 
 			dec frame
 

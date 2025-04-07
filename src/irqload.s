@@ -175,11 +175,11 @@ fastload_iffl_counter:
 fastload_request:
 		.byte 4											; Start with seeking to track 0
 
-		; 0x00 = fl_idle									; idle
+		; 0x00 = fl_idle								; idle
 		; 0x01 = fl_new_request							; requested
 		; 0x02 = fl_directory_scan						; scan directory
 		; 0x03 = fl_read_file_block						; read file block
-		; 0x04 = fl_seek_track_0							; seek to track 0
+		; 0x04 = fl_seek_track_0						; seek to track 0
 		; 0x05 = fl_reading_sector						; track stepping/sector reading state
 		; 0x06 = fl_iffl_read_file_block_init
 		; 0x07 = fl_iffl_read_file_block
@@ -251,7 +251,7 @@ fl_not_in_error_state:
 		rts												; nope, something must have gone wrong (0x80 (file not found) is bigger than 8)
 
 fl_job_ok:
-		asl a												; shift state left one bit, so that we can use it as a lookup
+		asl a											; shift state left one bit, so that we can use it as a lookup
 		tax												; into a jump table. Everything else is handled by the jump table
 		jmp (fl_jumptable,x)
 

@@ -14,12 +14,62 @@ void program_loaddata()
 {
 	fl_init();
 	fl_waiting();
+
 	floppy_iffl_fast_load_init("MEGAMARS.DATA");
 	floppy_iffl_fast_load(); // chars
+	floppy_iffl_fast_load(); // song
+
+	floppy_iffl_fast_load_init("MAP0.DATA");
 	floppy_iffl_fast_load(); // pal
 	floppy_iffl_fast_load(); // heightmap
 	floppy_iffl_fast_load(); // colourmap
-	floppy_iffl_fast_load(); // song
+
+	fl_exit();
+}
+
+void program_loadmapinit()
+{
+	fl_init();
+	fl_waiting();
+	clearscreen();
+}
+
+void program_loadmapexit()
+{
+	floppy_iffl_fast_load(); // pal
+	dma_runjob((__far char *)&dma_copypalette);
+	floppy_iffl_fast_load(); // heightmap
+	floppy_iffl_fast_load(); // colourmap
+	fl_exit();
+	program_state = 0;
+}
+
+void program_loadmap0()
+{
+	program_loadmapinit();
+	floppy_iffl_fast_load_init("MAP0.DATA");
+	program_loadmapexit();
+}
+
+void program_loadmap1()
+{
+	program_loadmapinit();
+	floppy_iffl_fast_load_init("MAP1.DATA");
+	program_loadmapexit();
+}
+
+void program_loadmap2()
+{
+	program_loadmapinit();
+	floppy_iffl_fast_load_init("MAP2.DATA");
+	program_loadmapexit();
+}
+
+void program_loadmap3()
+{
+	program_loadmapinit();
+	floppy_iffl_fast_load_init("MAP3.DATA");
+	program_loadmapexit();
 }
 
 void program_init()
@@ -106,5 +156,21 @@ void program_update()
 	else if(keyboard_keypressed(KEYBOARD_CURSORLEFT))
 	{
 		xoffset--;
+	}
+	else if(keyboard_keyreleased(KEYBOARD_KEY1))
+	{
+		program_state = 1;
+	}
+	else if(keyboard_keyreleased(KEYBOARD_KEY2))
+	{
+		program_state = 2;
+	}
+	else if(keyboard_keyreleased(KEYBOARD_KEY3))
+	{
+		program_state = 3;
+	}
+	else if(keyboard_keyreleased(KEYBOARD_KEY4))
+	{
+		program_state = 4;
 	}
 }
