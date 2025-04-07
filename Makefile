@@ -1,7 +1,7 @@
 # -----------------------------------------------------------------------------
 
-megabuild		= 1
-attachdebugger	= 0
+megabuild		= 0
+attachdebugger	= 1
 
 # -----------------------------------------------------------------------------
 
@@ -21,7 +21,7 @@ MEGAADDRESS		= megatool -a
 MEGACRUNCH		= megatool -c
 MEGAIFFL		= megatool -i
 EL				= etherload
-XMEGA65			= D:\PCTOOLS\xemu\xmega65.exe
+XMEGA65			= xmega65.exe
 MEGAFTP			= mega65_ftp -e
 
 .SUFFIXES: .o .s .out .bin .pu .b2 .a
@@ -105,12 +105,8 @@ $(EXE_DIR)/megamars.prg.mc: $(EXE_DIR)/megamars.prg
 # -----------------------------------------------------------------------------
 
 $(EXE_DIR)/megamars.d81: $(EXE_DIR)/megamars.prg.mc  $(BIN_DIR)/alldata.bin
-	$(RM) $@
-	$(CC1541) -n "megamars" -i " 2025" -d 19 -v\
-	 \
-	 -f "megamars" -w $(EXE_DIR)/megamars.prg.mc \
-	 -f "megamars.data" -w $(BIN_DIR)/alldata.bin \
-	$@
+	- $(RM) $@
+	$(CC1541) -n "megamars" -i " 2025" -d 19 -v -f "megamars" -w $(EXE_DIR)/megamars.prg.mc -f "megamars.data" -w $(BIN_DIR)/alldata.bin $@
 
 # -----------------------------------------------------------------------------
 
@@ -124,12 +120,18 @@ ifeq ($(attachdebugger), 1)
 endif
 else
 ifeq ($(attachdebugger), 1)
-	cmd.exe /c "$(XMEGA65) -uartmon :4510 -autoload -8 $(EXE_DIR)/megamars.d81" & m65dbg -l tcp 4510
+#	cmd.exe /c "$(XMEGA65) -uartmon :4510 -autoload -8 $(EXE_DIR)/megamars.d81" & m65dbg -l tcp 4510
+	start "" $(XMEGA65) -uartmon :4510 -autoload -8 $(EXE_DIR)/megamars.d81 & \
+	start "" m65dbg -l tcp 4510
 else
 	cmd.exe /c "$(XMEGA65) -autoload -8 $(EXE_DIR)/megamars.d81"
 endif
 endif
 
 clean:
-	-rm -f $(OBJS) $(OBJS:%.o=%.clst) $(OBJS_DEBUG) $(OBJS_DEBUG:%.o=%.clst) $(BIN_DIR)/*_*.bin
+	-rm -f $(OBJS) 
+	-rm -f $(OBJS:%.o=%.clst) 
+	-rm -f $(OBJS_DEBUG) 
+	-rm -f $(OBJS_DEBUG:%.o=%.clst) 
+	-rm -f $(BIN_DIR)/*_*.bin
 	-rm -f $(EXE_DIR)/megamars.d81 $(EXE_DIR)/megamars.elf $(EXE_DIR)/megamars.prg $(EXE_DIR)/megamars.prg.mc $(EXE_DIR)/megamars.lst $(EXE_DIR)/megamars-debug.lst
